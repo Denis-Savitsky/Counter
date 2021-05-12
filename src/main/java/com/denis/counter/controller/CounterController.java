@@ -17,6 +17,7 @@ public class CounterController {
     private final CounterService counterService;
 
     @PostMapping("/counters")
+    @ResponseStatus(HttpStatus.CREATED)
     public void createController(@RequestParam("name") String name) {
         try {
             counterService.createNewCounter(name);
