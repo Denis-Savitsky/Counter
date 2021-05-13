@@ -2,13 +2,14 @@ package com.denis.counter.controller;
 
 import com.denis.counter.exceptions.CounterAlreadyExistsException;
 import com.denis.counter.exceptions.NoSuchCounterException;
+import com.denis.counter.model.Counter;
 import com.denis.counter.service.CounterService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Set;
+import java.util.List;
 
 @AllArgsConstructor
 @RestController
@@ -18,9 +19,9 @@ public class CounterController {
 
     @PostMapping("/counters")
     @ResponseStatus(HttpStatus.CREATED)
-    public void createController(@RequestParam("name") String name) {
+    public Counter createController(@RequestParam("name") String name) {
         try {
-            counterService.createNewCounter(name);
+            return counterService.createNewCounter(name);
         } catch (CounterAlreadyExistsException ex) {
             throw new ResponseStatusException(
                     HttpStatus.CONFLICT, "Counter already exists");
@@ -28,9 +29,9 @@ public class CounterController {
     }
 
     @PutMapping("/counters")
-    public void incrementCounterValue(@RequestParam("name") String name) {
+    public Counter incrementCounterValue(@RequestParam("name") String name) {
         try {
-            counterService.incrementCounterValue(name);
+            return counterService.incrementCounterValue(name);
         } catch (NoSuchCounterException ex) {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND, "Counter not found");
@@ -48,9 +49,9 @@ public class CounterController {
     }
 
     @DeleteMapping("/counters")
-    public void deleteCounter(@RequestParam("name") String name) {
+    public Counter deleteCounter(@RequestParam("name") String name) {
         try {
-            counterService.deleteCounter(name);
+            return counterService.deleteCounter(name);
         } catch (NoSuchCounterException ex) {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND, "Counter not found");
@@ -63,7 +64,7 @@ public class CounterController {
     }
 
     @GetMapping("/counters/names")
-    public Set<String> getCountersNames() {
+    public List<String> getCountersNames() {
         return counterService.getCountersNames();
     }
 }

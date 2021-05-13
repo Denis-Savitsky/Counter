@@ -7,7 +7,7 @@ import com.denis.counter.repository.CounterRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Set;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -17,16 +17,17 @@ public class CounterServiceImpl implements CounterService {
     private final CounterRepository counterRepository;
 
     @Override
-    public void createNewCounter(String name) {
+    public Counter createNewCounter(String name) {
         var counter = new Counter(name, 0);
         if (counter.equals(counterRepository.addCounter(counter))) {
             throw new CounterAlreadyExistsException();
         }
+        return counter;
     }
 
     @Override
-    public void incrementCounterValue(String name) {
-        counterRepository.updateCounter(name)
+    public Counter incrementCounterValue(String name) {
+        return counterRepository.updateCounter(name)
                 .orElseThrow(NoSuchCounterException::new);
     }
 
@@ -38,8 +39,8 @@ public class CounterServiceImpl implements CounterService {
     }
 
     @Override
-    public void deleteCounter(String name) {
-        counterRepository.deleteCounter(name)
+    public Counter deleteCounter(String name) {
+        return counterRepository.deleteCounter(name)
                 .orElseThrow(NoSuchCounterException::new);
     }
 
@@ -51,9 +52,9 @@ public class CounterServiceImpl implements CounterService {
     }
 
     @Override
-    public Set<String> getCountersNames() {
+    public List<String> getCountersNames() {
         return counterRepository.getAllCounters().stream()
                 .map(Counter::getName)
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
     }
 }

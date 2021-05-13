@@ -1,12 +1,15 @@
 package com.denis.counter.service;
 
+import com.denis.counter.model.Counter;
+
+import java.util.List;
 import java.util.Set;
 
 public interface CounterService {
-    void createNewCounter(String name);
-    void incrementCounterValue(String name);
+    Counter createNewCounter(String name);
+    Counter incrementCounterValue(String name);
     int getCounterValue(String name);
-    void deleteCounter(String name);
+    Counter deleteCounter(String name);
     int getAccumulativeValue();
-    Set<String> getCountersNames();
+    List<String> getCountersNames();
 }
