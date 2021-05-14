@@ -40,6 +40,7 @@ class CounterControllerTest {
                 .andExpect(jsonPath("$.name", is(NAME)))
                 .andExpect(jsonPath("$.value", is(COUNTER_VALUE)))
                 .andExpect(status().isCreated());
+        verify(counterService, times(1)).createNewCounter(NAME);
     }
 
     @Test
@@ -47,6 +48,7 @@ class CounterControllerTest {
         willThrow(new CounterAlreadyExistsException()).given(counterService).createNewCounter(anyString());
         this.mockMvc.perform(post("/counters").queryParam(REQUEST_PARAM_NAME, NAME))
                 .andExpect(status().isConflict());
+        verify(counterService, times(1)).createNewCounter(anyString());
     }
 
     @Test
@@ -57,6 +59,7 @@ class CounterControllerTest {
                 .andExpect(jsonPath("$.name", is(NAME)))
                 .andExpect(jsonPath("$.value", is(COUNTER_VALUE + 1)))
                 .andExpect(status().isOk());
+        verify(counterService, times(1)).incrementCounterValue(NAME);
     }
 
     @Test
@@ -64,6 +67,7 @@ class CounterControllerTest {
         willThrow(new NoSuchCounterException()).given(counterService).incrementCounterValue(anyString());
         this.mockMvc.perform(put("/counters").queryParam(REQUEST_PARAM_NAME, NAME))
                 .andExpect(status().isNotFound());
+        verify(counterService, times(1)).incrementCounterValue(anyString());
     }
 
     @Test
@@ -72,6 +76,7 @@ class CounterControllerTest {
         this.mockMvc.perform(get("/counters").queryParam(REQUEST_PARAM_NAME, NAME))
                 .andExpect(status().isOk())
                 .andExpect(content().string(String.valueOf(COUNTER_VALUE)));
+        verify(counterService, times(1)).getCounterValue(anyString());
     }
 
     @Test
@@ -79,6 +84,7 @@ class CounterControllerTest {
         willThrow(new NoSuchCounterException()).given(counterService).getCounterValue(anyString());
         this.mockMvc.perform(get("/counters").queryParam(REQUEST_PARAM_NAME, NAME))
                 .andExpect(status().isNotFound());
+        verify(counterService, times(1)).getCounterValue(anyString());
     }
 
     @Test
@@ -89,6 +95,7 @@ class CounterControllerTest {
                 .andExpect(jsonPath("$.name", is(NAME)))
                 .andExpect(jsonPath("$.value", is(COUNTER_VALUE)))
                 .andExpect(status().isOk());
+        verify(counterService, times(1)).deleteCounter(NAME);
     }
 
     @Test
@@ -96,6 +103,7 @@ class CounterControllerTest {
         willThrow(new NoSuchCounterException()).given(counterService).deleteCounter(anyString());
         this.mockMvc.perform(delete("/counters").queryParam(REQUEST_PARAM_NAME, NAME))
                 .andExpect(status().isNotFound());
+        verify(counterService, times(1)).deleteCounter(anyString());
     }
 
     @Test
@@ -103,11 +111,13 @@ class CounterControllerTest {
         given(counterService.getAccumulativeValue()).willReturn(COUNTER_VALUE);
         this.mockMvc.perform(get("/counters/value")).andExpect(status().isOk())
                 .andExpect(content().string(String.valueOf(COUNTER_VALUE)));
+        verify(counterService, times(1)).getAccumulativeValue();
     }
 
     @Test
     public void gettingCounterNameReturnsNamesAnd200Status() throws Exception {
         given(counterService.getCountersNames()).willReturn(NAMES);
         this.mockMvc.perform(get("/counters/names")).andExpect(status().isOk());
+        verify(counterService, times(1)).getCountersNames();
     }
 }

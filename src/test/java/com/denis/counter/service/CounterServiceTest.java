@@ -4,6 +4,7 @@ import com.denis.counter.exceptions.CounterAlreadyExistsException;
 import com.denis.counter.exceptions.NoSuchCounterException;
 import com.denis.counter.model.Counter;
 import com.denis.counter.repository.CounterRepository;
+import lombok.val;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -15,6 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 class CounterServiceTest {
 
@@ -36,6 +38,7 @@ class CounterServiceTest {
         given(counterRepository.addCounter(any(Counter.class))).willReturn(null);
         var counter = new Counter(NAME, COUNTER_VALUE);
         assertEquals(counter, counterService.createNewCounter(NAME));
+        verify(counterRepository).addCounter(counter);
     }
 
     @Test
@@ -44,6 +47,7 @@ class CounterServiceTest {
         given(counterRepository.addCounter(counter)).willReturn(counter);
         assertThrows(CounterAlreadyExistsException.class,
                 () -> counterService.createNewCounter(NAME));
+        verify(counterRepository).addCounter(counter);
     }
 
     @Test
@@ -51,8 +55,10 @@ class CounterServiceTest {
         var counter = new Counter(NAME, COUNTER_VALUE);
         var counterIncremented = new Counter(NAME, COUNTER_VALUE + 1);
         given(counterRepository.updateCounter(counter.getName())).willReturn(Optional.of(counterIncremented));
-        assertEquals(counter.getName(), counterService.incrementCounterValue(counter.getName()).getName());
-        assertEquals(counter.getValue() + 1, counterService.incrementCounterValue(counter.getName()).getValue());
+        val COUNTER_TO_COMPARE = counterService.incrementCounterValue(counter.getName());
+        assertEquals(counter.getName(), COUNTER_TO_COMPARE.getName());
+        assertEquals(counter.getValue() + 1, COUNTER_TO_COMPARE.getValue());
+        verify(counterRepository).updateCounter(counter.getName());
     }
 
     @Test
@@ -60,6 +66,7 @@ class CounterServiceTest {
         given(counterRepository.updateCounter(NAME)).willReturn(Optional.ofNullable(null));
         assertThrows(NoSuchCounterException.class,
                 () -> counterService.incrementCounterValue(NAME));
+        verify(counterRepository).updateCounter(NAME);
     }
 
     @Test
@@ -67,6 +74,7 @@ class CounterServiceTest {
         var counter = new Counter(NAME, COUNTER_VALUE);
         given(counterRepository.getByName(counter.getName())).willReturn(Optional.of(counter));
         assertEquals(counter.getValue(), counterService.getCounterValue(counter.getName()));
+        verify(counterRepository).getByName(counter.getName());
     }
 
     @Test
@@ -74,6 +82,7 @@ class CounterServiceTest {
         given(counterRepository.getByName(NAME)).willReturn(Optional.ofNullable(null));
         assertThrows(NoSuchCounterException.class,
                 () -> counterService.getCounterValue(NAME));
+        verify(counterRepository).getByName(NAME);
     }
 
     @Test
@@ -81,6 +90,7 @@ class CounterServiceTest {
         var counter = new Counter(NAME, COUNTER_VALUE);
         given(counterRepository.deleteCounter(counter.getName())).willReturn(Optional.of(counter));
         assertEquals(counter, counterService.deleteCounter(counter.getName()));
+        verify(counterRepository).deleteCounter(counter.getName());
     }
 
     @Test
@@ -88,12 +98,14 @@ class CounterServiceTest {
         given(counterRepository.deleteCounter(NAME)).willReturn(Optional.ofNullable(null));
         assertThrows(NoSuchCounterException.class,
                 () -> counterService.deleteCounter(NAME));
+        verify(counterRepository).deleteCounter(NAME);
     }
 
     @Test
     void getAccumulativeValueReturnZeroIfNoCounters() {
         given(counterRepository.getAllCounters()).willReturn(List.of());
         assertEquals(counterService.getAccumulativeValue(), 0);
+        verify(counterRepository).getAllCounters();
     }
 
     @Test
@@ -102,12 +114,14 @@ class CounterServiceTest {
         var counterTwo = new Counter(NAME_TWO, 5);
         given(counterRepository.getAllCounters()).willReturn(List.of(counterTwo, counter));
         assertEquals(counterService.getAccumulativeValue(), 7);
+        verify(counterRepository).getAllCounters();
     }
 
     @Test
     void getCountersNamesReturnsEmptyListIfNoCounters() {
         given(counterRepository.getAllCounters()).willReturn(List.of());
         assertEquals(counterService.getCountersNames(), Collections.emptyList());
+        verify(counterRepository).getAllCounters();
     }
 
     @Test
@@ -116,6 +130,7 @@ class CounterServiceTest {
         var counterTwo = new Counter(NAME_TWO, 5);
         given(counterRepository.getAllCounters()).willReturn(List.of(counter, counterTwo));
         assertTrue(counterService.getCountersNames().containsAll(List.of(NAME, NAME_TWO)));
+        verify(counterRepository).getAllCounters();
     }
 
 
