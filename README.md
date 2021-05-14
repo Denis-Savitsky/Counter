@@ -1,11 +1,12 @@
 # Counter
-# Link to docker image: 
-https://hub.docker.com/layers/dsavitsky96/counter/1.0.1/images/sha256:add5921f589c51d18852968db3efe113966b372ddce647294b6e72c58731dcec
 
-# Для запуска контейнера:
-docker run -p {port}:8080 -t dsavitsky96/counter:1.0.3
+## Для загрузки образа: 
+docker pull dsavitsky96/counter:1.0.4
 
-# API
+## Для запуска контейнера:
+docker run -p {port}:8080 -t dsavitsky96/counter:1.0.4
+
+## API
 
 - для создания счетчика с уникальным именем {{NAME}} необходимо выполнить запрос:
 POST /counters?name={{NAME}}
