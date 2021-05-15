@@ -5,6 +5,7 @@ import com.denis.counter.exceptions.NoSuchCounterException;
 import com.denis.counter.model.Counter;
 import com.denis.counter.repository.CounterRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Scope("request")
 public class CounterServiceImpl implements CounterService {
 
     private final CounterRepository counterRepository;

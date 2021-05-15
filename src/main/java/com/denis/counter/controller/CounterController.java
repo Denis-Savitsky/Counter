@@ -5,6 +5,7 @@ import com.denis.counter.exceptions.NoSuchCounterException;
 import com.denis.counter.model.Counter;
 import com.denis.counter.service.CounterService;
 import lombok.AllArgsConstructor;
+import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -13,6 +14,7 @@ import java.util.List;
 
 @AllArgsConstructor
 @RestController
+@Scope("request")
 public class CounterController {
 
     private final CounterService counterService;
