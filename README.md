@@ -1,10 +1,10 @@
 # Counter
 
 ## Для загрузки образа: 
-docker pull dsavitsky96/counter:1.0.4
+docker pull dsavitsky96/counter:1.0.5
 
 ## Для запуска контейнера:
-docker run -p {port}:8080 -t dsavitsky96/counter:1.0.4
+docker run -p {port}:8080 -t dsavitsky96/counter:1.0.5
 
 ## API
 
